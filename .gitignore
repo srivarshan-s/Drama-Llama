@@ -4,3 +4,6 @@ venv
 pyproject.toml
 uv.lock
 .python-version
+
+# System files
+.DS_store
