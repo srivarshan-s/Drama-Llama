@@ -4,6 +4,8 @@ venv
 pyproject.toml
 uv.lock
 .python-version
+.vscode
+*.ipynb_checkpoints
 
 # System files
 .DS_store
