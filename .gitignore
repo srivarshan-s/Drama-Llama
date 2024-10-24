@@ -9,3 +9,5 @@ uv.lock
 # System files
 .DS_store
 .idea
+*/*/__pycache__
+*/__pycache__

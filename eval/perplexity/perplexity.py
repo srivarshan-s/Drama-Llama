@@ -7,7 +7,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 
 class Perplexity:
-    def __init__(self, model_name):
+    def __init__(self, model_name, dtype=torch.float32):
         """
 
         :param model_name: Huggingface model name
@@ -26,7 +26,7 @@ class Perplexity:
             print("Using CPU")
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=dtype)
 
         self.model.eval()
         self.model.to(self.device)
@@ -70,7 +70,7 @@ class Perplexity:
         return token_to_prob
 
     def _calculate_sentence_probability(self, token_probs):
-        log_probs = [math.log(prob) for prob in token_probs]
+        log_probs = [math.log(prob) for prob in token_probs if prob > 0]
         sentence_probability = sum(log_probs)
         return sentence_probability
 
@@ -109,12 +109,15 @@ class Perplexity:
 
 
 if __name__ == "__main__":
-    model = "unsloth/Llama-3.2-3B-Instruct"
-    # model = 'meta-llama/Llama-3.2-1B-Instruct'
-    data = pd.read_csv('../../data/test.csv')
+    
+    dtype = torch.float16
+    model = 'meta-llama/Llama-3.2-1B-Instruct'
+    
+    data = pd.read_csv('data/test.csv')
     def concat(x):
         return x['instruction'] + "\n" + x['output']
     texts = data.apply(lambda x: concat(x), axis=1)
-    perplexity = Perplexity(model)
+    
+    perplexity = Perplexity(model, dtype=dtype)
     score = perplexity.get_score(texts)
     print(f"Perplexity Score: {score}")
