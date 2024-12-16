@@ -11,3 +11,7 @@ uv.lock
 .idea
 */*/__pycache__
 */__pycache__
+.env
+finetuning/hf
+finetuning/Llama*
+finetuning/outputs
